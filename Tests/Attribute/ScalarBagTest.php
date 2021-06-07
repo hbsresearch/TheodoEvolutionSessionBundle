@@ -2,6 +2,7 @@
 
 namespace Theodo\Evolution\Bundle\SessionBundle\Tests\Attribute;
 
+use PHPUnit\Framework\TestCase;
 use Theodo\Evolution\Bundle\SessionBundle\Attribute\ScalarBag;
 
 /**
@@ -9,7 +10,7 @@ use Theodo\Evolution\Bundle\SessionBundle\Attribute\ScalarBag;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class ScalarBagTest extends \PHPUnit_Framework_TestCase
+class ScalarBagTest extends TestCase
 {
     /**
      * @dataProvider getSessions

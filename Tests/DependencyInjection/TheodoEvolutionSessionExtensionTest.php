@@ -2,48 +2,50 @@
 
 namespace Theodo\Evolution\Bundle\SessionBundle\Tests\DependencyInjection;
 
+use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Theodo\Evolution\Bundle\SessionBundle\DependencyInjection\TheodoEvolutionSessionExtension;
 
-class TheodoEvolutionSessionExtensionTest extends \PHPUnit_Framework_TestCase
+class TheodoEvolutionSessionExtensionTest extends AbstractExtensionTestCase
 {
+    protected function getContainerExtensions(): array
+    {
+        return array(
+            new TheodoEvolutionSessionExtension()
+        );
+    }
+
     /**
      * @dataProvider getConfiguration
      */
     public function testConfiguration($config)
     {
-        $parser = new Parser();
-        $config = $parser->parse($config);
+        $this->load($config);
 
-        $builder = new ContainerBuilder();
-        $extension = new TheodoEvolutionSessionExtension();
-        $extension->load(array($config), $builder);
+        $this->assertContainerBuilderHasService('theodo_evolution.session.bag_manager');
     }
 
     public function getConfiguration()
     {
-        return array(
-            array(<<<YML
-bag_manager:
-    class: TestClass
-    configuration_class: TestConfigurationClass
-YML
-            ),
-            array(<<<YML
-bag_manager_service: foo
-bag_configuration_service: bar
-YML
-            )
-        );
+        return [
+            'default' => [
+                [
+                    'bag_manager' => ['class' => 'TestClass', 'configuration_class' => 'TestConfigurationClass'],
+                    'bag_manager_service' => 'foo',
+                    'bag_configuration_service' => 'bar'
+                ]
+            ]
+        ];
     }
 
     /**
      * @dataProvider getInvalidConfiguration
-     * @expectedException \InvalidArgumentException
      */
     public function testInvalidConfiguration($config)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $parser = new Parser();
         $config = $parser->parse($config);
 

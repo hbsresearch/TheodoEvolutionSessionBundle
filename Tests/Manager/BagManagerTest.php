@@ -1,15 +1,18 @@
 <?php
 namespace Theodo\Evolution\Bundle\SessionBundle\Manager;
 
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Theodo\Evolution\Bundle\SessionBundle\Attribute\ScalarBag;
 use Theodo\Evolution\Bundle\SessionBundle\Manager\BagManager;
 
-class BagManagerTest extends \PHPUnit_Framework_TestCase
+class BagManagerTest extends TestCase
 {
     public function testInitialize()
     {
-        $configuration = $this->getMock('Theodo\Evolution\Bundle\SessionBundle\Manager\BagManagerConfigurationInterface');
+        $configuration = $this->getMockBuilder(BagManagerConfigurationInterface::class)->getMock();
         $configuration->expects($this->once())
             ->method('getNamespaces')
             ->will($this->returnValue(array('array', 'scalar')))
@@ -26,7 +29,7 @@ class BagManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new BagManager($configuration);
         $manager->initialize($session);
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag', $session->getBag('array'));
-        $this->assertInstanceOf('Theodo\Evolution\Bundle\SessionBundle\Attribute\ScalarBag', $session->getBag('scalar'));
+        $this->assertInstanceOf(AttributeBag::class, $session->getBag('array'));
+        $this->assertInstanceOf(ScalarBag::class, $session->getBag('scalar'));
     }
 }
