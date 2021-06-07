@@ -2,26 +2,47 @@
 
 namespace Theodo\Evolution\Bundle\SessionBundle\Listener;
 
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Theodo\Evolution\Bundle\SessionBundle\Listener\SessionSubscriber;
+use Theodo\Evolution\Bundle\SessionBundle\Manager\BagManagerInterface;
 
-class SessionSubscriberTest extends \PHPUnit_Framework_TestCase
+class SessionSubscriberTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|Request
+     */
+    private $request;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|BagManagerInterface
+     */
+    private $bagManager;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|SessionSubscriber
+     */
+    private  $listener;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|RequestEvent
+     */
+    private $eventMock;
+
+    public function setUp(): void
     {
-        $this->request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $this->bagManager = $this->getMock('Theodo\Evolution\Bundle\SessionBundle\Manager\BagManagerInterface');
+        $this->request = $this->getMockBuilder(Request::class)->getMock();
+        $this->bagManager = $this->getMockBuilder(BagManagerInterface::class)->getMock();
         $this->listener = new SessionSubscriber($this->bagManager);
 
         $this->request->expects($this->any())
             ->method('getSession')
             ->will(
                 $this->returnValue(
-                    $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface')
+                    $this->getMockBuilder(SessionInterface::class)->getMock()
                 )
             );
 
-        $this->eventMock = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseEvent')
+        $this->eventMock = $this->getMockBuilder(RequestEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 

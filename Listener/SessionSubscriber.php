@@ -3,7 +3,7 @@
 namespace Theodo\Evolution\Bundle\SessionBundle\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Theodo\Evolution\Bundle\SessionBundle\Manager\BagManagerInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -16,12 +16,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class SessionSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \Theodo\EvolutionBundle\Session\Manager\BagManagerInterface
+     * @var \Theodo\Evolution\Bundle\SessionBundle\Manager\BagManagerInterface
      */
     private $bagManager;
 
     /**
-     * @param \Theodo\EvolutionBundle\Session\Manager\BagManagerInterface $bagManager
+     * @param \Theodo\Evolution\Bundle\SessionBundle\Manager\BagManagerInterface $bagManager
      */
     public function __construct(BagManagerInterface $bagManager)
     {
@@ -31,10 +31,10 @@ class SessionSubscriber implements EventSubscriberInterface
     /**
      * Initializes the bag manager if it has not yet been done
      *
-     * @param  GetResponseEvent $event
+     * @param  RequestEvent $event
      * @return mixed
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()
             || false == $event->getRequest()->hasSession()
